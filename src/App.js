@@ -1,32 +1,28 @@
 import './App.css';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 
-const API_URL = "http://10.138.240.15:5000/api/data";//might need to change based on what it looks like on the pi
+const API_URL = "http://10.138.240.15:5000/api/users";//might need to change based on what it looks like on the pi
 
 function App() {
-  const [data, setData] = useState([]);
-  const [error, setError] = useState("");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     axios.get(API_URL)
-      .then(response => setData(response.data))
-      .catch(error => {
-        console.error("Error fetching data:", error);
-        setError("Failed to load data");
-      });
+      .then(response => setUsers(response.data))
+      .catch(error => console.error("Error fetching users:", error));
   }, []);
 
   return (
     <div>
-      <h1>MySQL Data</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <h1>User List</h1>
       <ul>
-        {data.map((item, index) => (
-          <li key={index}>{JSON.stringify(item)}</li>
+        {users.map(user => (
+          <li key={user.id}>{user.name} - {user.email}</li>
         ))}
       </ul>
     </div>
   );
 }
 
-export default App;//probably goint to return errors rn
+export default App;
