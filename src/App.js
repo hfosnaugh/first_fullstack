@@ -1,25 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import axios from "axios";
+
+const API_URL = "http://10.138.240.15:5000/api/data";//might need to change based on what it looks like on the pi
 
 function App() {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios.get(API_URL)
+      .then(response => setData(response.data))
+      .catch(error => {
+        console.error("Error fetching data:", error);
+        setError("Failed to load data");
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>MySQL Data</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <ul>
+        {data.map((item, index) => (
+          <li key={index}>{JSON.stringify(item)}</li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default App;
+export default App;//probably goint to return errors rn
